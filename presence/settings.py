@@ -129,7 +129,7 @@ LOGGING = {
     'loggers': {
         'gatecontrol': {
             'handlers': ['file', 'console'],
-            'level': 'INFO',
+            'level': 'DEBUG',
             'propagate': True,
         },
         'hlcs': {
