@@ -17,10 +17,11 @@ STATE_RING = {'id' : 2, 'description' : 'ring'}
 class HpccExternal(Gate):
     
     def __init__(self, modem=None):
-        if modem is None:
-            self.modem = AtlantisModem()
-        else:
-            self.modem = modem
+        pass
+        #if modem is None:
+        #    self.modem = AtlantisModem()
+        #else:
+        #    self.modem = modem
         
     def get_available_states(self):
         return (STATE_CLOSED, STATE_OPEN, STATE_RING)
@@ -31,6 +32,7 @@ class HpccExternal(Gate):
         self.controller.start()
         
     def get_state(self, request=None):
+        return STATE_CLOSED
         if request is None:
             return STATE_CLOSED
         elif request.is_ok():
