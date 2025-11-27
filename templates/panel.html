@@ -6,164 +6,198 @@
 
 {% block script %}
 
-<script src="{% static 'js/jquery.timeago.js' %}" type="text/javascript"></script>
+
 <script type="text/javascript">
 
 function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie != '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
+  var cookieValue = null;
+  if (document.cookie && document.cookie != "") {
+    var cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      var cookie = cookies[i].trim();
+      // Does this cookie string begin with the name we want?
+      if (cookie.substring(0, name.length + 1) == name + "=") {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
     }
-    return cookieValue;
+  }
+  return cookieValue;
 }
-var csrftoken = getCookie('csrftoken');
-
+const csrftoken = getCookie("csrftoken");
 
 function csrfSafeMethod(method) {
-    // these HTTP methods do not require CSRF protection
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  // these HTTP methods do not require CSRF protection
+  return /^(GET|HEAD|OPTIONS|TRACE)$/.test(method);
 }
-$.ajaxSetup({
-    beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        }
+ async function fetchWithCsrf(url, options = {}) {
+  const method = options.method ? options.method.toUpperCase() : "GET";
+  const headers = new Headers(options.headers || {});
+  headers.set("X-CSRFToken", csrftoken);
+  options.headers = headers;
+
+  return fetch(url, options);
+}
+
+function timeAgo(dateAttr) {
+  // Italian strings configuration
+  const strings = {
+    suffixAgo: "fa",
+    suffixFromNow: "da ora",
+    seconds: "meno di un minuto",
+    minute: "circa un minuto",
+    minutes: "%d minuti",
+    hour: "circa un'ora",
+    hours: "circa %d ore",
+    day: "un giorno",
+    days: "%d giorni",
+    month: "circa un mese",
+    months: "%d mesi",
+    year: "circa un anno",
+    years: "%d anni",
+  };
+
+  const date = new Date(dateAttr);
+  if (isNaN(date.getTime())) return; // Handle invalid dates
+
+  const now = new Date();
+  const isPast = date.getTime() < now.getTime();
+  const diff = Math.abs(date.getTime() - now.getTime()); // Absolute difference in milliseconds
+  const seconds = diff / 1000;
+  const minutes = seconds / 60;
+  const hours = minutes / 60;
+  const days = hours / 24;
+  const months = days / 30.4368; // Average days per month
+  const years = days / 365.242; // Average days per year
+
+  let timeString;
+  let units;
+  let unitValue;
+
+  if (seconds < 45) {
+    timeString = strings.seconds;
+  } else if (seconds < 90) {
+    timeString = strings.minute;
+  } else if (minutes < 45) {
+    units = strings.minutes;
+    unitValue = Math.round(minutes);
+  } else if (minutes < 90) {
+    timeString = strings.hour;
+  } else if (hours < 24) {
+    units = strings.hours;
+    unitValue = Math.round(hours);
+  } else if (hours < 48) {
+    timeString = strings.day;
+  } else if (days < 30) {
+    units = strings.days;
+    unitValue = Math.floor(days);
+  } else if (days < 60) {
+    timeString = strings.month;
+  } else if (days < 365) {
+    units = strings.months;
+    unitValue = Math.floor(months);
+  } else if (years < 2) {
+    timeString = strings.year;
+  } else {
+    units = strings.years;
+    unitValue = Math.floor(years);
+  }
+
+  // Apply the unit value if applicable
+  if (units) {
+    timeString = units.replace(/%d/i, unitValue);
+  }
+   console.log(timeString);
+  // Append the suffix
+  const suffix = isPast ? strings.suffixAgo : strings.suffixFromNow;
+  return `${timeString} ${suffix}`;
+}
+
+function setError(label_id) {
+  const label = document.querySelector(label_id);
+  label.classList.remove("label-default", "label-warning", "label-success");
+  label.classList.add("label-danger");
+  label.innerText = "error";
+}
+
+async function openExternal() {
+  try {
+    const header = await fetchWithCsrf("/gates/external/", { method: "POST" });
+    const body = await header.json();
+    if (body) waitRing(body);
+  } catch (e) {
+    setError(e);
+  }
+}
+
+async function openInternal() {
+  document.getElementById("internal-button").disabled = true;
+  const header = await fetchWithCsrf("/gates/internal/", { method: "POST" });
+}
+
+function updateLabel(label_id, state) {
+  const label = document.querySelector(label_id);
+  label.classList.remove(
+    "label-default",
+    "label-warning",
+    "label-success",
+    "label-danger",
+  );
+  label.innerText = state.description;
+
+  if (state.id == 0) label.classList.add("label-default");
+  else if (state.id == 1) label.classList.add("label-success");
+  else label.classList.add("label-warning");
+}
+
+function waitRing(response) {
+  document.getElementById("#external-button").disabled = true;
+  const endpoint = "/gates/external/" + "?req_id=" + response.req_id;
+  const interval = setInterval(async function () {
+    try {
+      const header = await fetchWithCsrf(endpoint);
+      const response = await header.json();
+      updateLabel("#external-status", response);
+      if (response.pending == false) clearInterval(interval);
+    } catch (e) {
+      setError("#external-status");
+      document.getElementById("#external-button").disabled = true;
     }
-});
+  }, 1000);
+}
 
-jQuery.timeago.settings.strings = {
-		suffixAgo: "fa",
-		suffixFromNow: "da ora",
-		seconds: "meno di un minuto",
-		minute: "circa un minuto",
-		minutes: "%d minuti",
-		hour: "circa un'ora",
-		hours: "circa %d ore",
-		day: "un giorno",
-		days: "%d giorni",
-		month: "circa un mese",
-		months: "%d mesi",
-		year: "circa un anno",
-		years: "%d anni"
-		};
+async function update() {
+  try {
+    const headerGateInternal = await fetch("/gates/internal/?limit=5");
+    const bodyGateInternal = await headerGateInternal.json();
+    updateLabel("#internal-status",bodyGateInternal);
+  } catch (e) {
+    console.error(e);
+    setError("#internal-status");
+  }
 
-	function setError(label_id) {
-		$(label_id).removeClass("label-default");
-		$(label_id).removeClass("label-warning");
-		$(label_id).removeClass("label-success");
-		$(label_id).addClass("label-danger");
-		$(label_id).text("error");
-	}
+  const headerReqInternal = await fetch("/requests/internal/?limit=5");
+  const bodyReqInternal = await headerReqInternal.json();
+  document.querySelector("#requests").innerHTML = "";
+  document.querySelector("#requests").innerHTML = bodyReqInternal
+    .map((resp) => {
+      const user = `<div class="user">${resp.user}</div>`;
+      const date = `<div class="timeago" >${timeAgo(resp.time)}</div>`;
+      const entry = `<div class="entry">${user}${date}</div>`;
+      return entry;
+    })
+    .join("");
+}
 
-	function openExternal() {
-		 $.ajax({
-             url: "{% url 'control' 'external' %}",
-             type: 'POST',
-             dataType: 'json',
-             success: waitRing,
-             error: setError
-		 });
-	}
-	
-	function openInternal() {
-		$("#internal-button").prop('disabled', true);
-		 $.ajax({
-            url: "{% url 'control' 'internal' %}",
-            type: 'POST',
-            dataType: 'json',
-            success: function(){},
-            error: function() {
-            	$("#internal-button").prop('disabled', false);
-            }
-		 });
-	}
-	
-	function updateLabel(label_id, state) {
-		 $(label_id).removeClass("label-default");
-    	 $(label_id).removeClass("label-warning");
-    	 $(label_id).removeClass("label-success");
-    	 $(label_id).removeClass("label-danger");
-    	 $(label_id).text(state.description);
-    	 if (state.id == 0)
-    		 $(label_id).addClass("label-default");
-    	 else  if (state.id == 1)
-    		 $(label_id).addClass("label-success");
-    	 else
-    		 $(label_id).addClass("label-warning");
-	}
+window.onload = () => {
+  update();
+  setInterval(update, 5000);
+document.querySelector(".navbar-toggle").onclick = ()=>{
+    document.querySelector("#navbar").classList.toggle("collapse");
+    
+  }
+};
 
-	function waitRing(response) {
-		
-		$("#external-button").prop('disabled', true);
-		var endpoint = "{% url 'control' 'external' %}" + "?req_id=" + response.req_id;
-		var interval = setInterval(function() {
-			 $.ajax({
-	             url: endpoint,
-	             type: 'GET',
-	             dataType: 'json',
-	             success: function(response){
-	            	updateLabel("#external-status", response);
-	            	 if (response.pending == false)
-	            		 clearInterval(interval);
-	             },
-	             error: function (xhr, status) {
-	            	 setError("#external-status");
-	            	 $("#external-button").prop('disabled', false);
-	             }
-			 });
-		}, 1000);
-	}
-	
-	function update() {
-		$.ajax({
-			url : "{% url 'control' 'internal' %}",
-			type : 'GET',
-			dataType : 'json',
-			success : function(response) {
-				updateLabel("#internal-status", response);
-			},
-			error : function(xhr, status) {
-				setError("#internal-status");
-			}
-
-		});
-		
-		$.ajax({
-			url : "{% url 'requests' 'internal' %}" + "?limit=5",
-			type : 'GET',
-			dataType : 'json',
-			success : function(response) {
-				$(".entry").detach()
-				var theDiv = $("#requests");
-				for (var i = 0; i<response.length; i++) {
-					var user = '<div class="user">%s</div>'.replace("%s", response[i].user);
-					var date = '<div class="timeago" title="%s"></div>'.replace("%s", response[i].time);
-					var entry = '<div class="entry">html</div>'.replace("html", user+date);
-					theDiv.append(entry);
-				};
-				$(".timeago").timeago();
-			},
-			error : function(xhr, status) {
-				
-			}
-
-		});
-		
-		
-	}
-	
-	$(document).ready(function(){
-		update();
-		setInterval(update, 5000);
-	});
 	
 </script>
 

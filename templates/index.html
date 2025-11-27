@@ -5,41 +5,37 @@
 
 {% endblock %} {% block script %}
 
+
+
+
+
 <script type="text/javascript">
-
-    function setClosedHeading() {
-    	$(".cover-heading").text("Chiuso");
-    	$("#info").hide();
-    }
-
-    function setOpenHeading() {
-    	$(".cover-heading").text("Aperto");
-    	$("#info").show();
-    }
-
-	function update() {
-		$.ajax({
-			url : "{% url 'control' 'internal' %}",
-			type : 'GET',
-			dataType : 'json',
-			success : function(response) {
-				if (response.id == 1)
-					setOpenHeading();
-				else
-					setClosedHeading();
-			},
-			error : function(xhr, status) {
-				setClosedHeading();
-			}
-
-		});
+        
+	const setOpenHeading = ()=>{
+        document.querySelector(".cover-heading").innerText = "Aperto";
+        document.querySelector("#info").style.display = "";
 	}
-
-	$(document).ready(function(){
-		$("#info").hide();
-		update();
-		setInterval(update, 5000);
-	});
+    const setClosedHeading = ()=>{
+        document.querySelector(".cover-heading").innerText = "Chiuso";
+        document.querySelector("#info").style.display = "none";
+	}
+    const update= async ()=>{
+    try{
+        const header = await fetch(`/gates/internal/`);
+        const body = await header.json();
+        if(body.id == 1)  setOpenHeading();
+        else setClosedHeading();
+    }
+        catch(error){
+        setClosedHeading();
+        }
+    }
+	
+	window.onload = ()=>{
+        document.querySelector("#info").style.display = "none";
+        update();
+        setInterval(update, 5000);
+	}
 </script>
 
 {% endblock %} {% block body %}
