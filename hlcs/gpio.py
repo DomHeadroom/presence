@@ -21,10 +21,10 @@ PULSE_SLEEP = getattr(settings, 'PULSE_SLEEP', 1)
 PULSE_ON = getattr(settings, 'PULSE_ON', 0)
 PULSE_OFF = getattr(settings, 'PULSE_OFF', 1)
 
-GPIO.setup(LOCK_PIN, GPIO.OUT, initial=PULSE_OFF)
+GPIO.setwarnings(False)
+
 GPIO.setup(MAGNET_PIN, GPIO.IN)  
     
-
 
 def magnet_input():
     try:
@@ -36,9 +36,14 @@ def magnet_input():
 
 def send_open_pulse():
     try:
+        GPIO.cleanup(LOCK_PIN)
+        GPIO.setup(LOCK_PIN, GPIO.OUT, initial=PULSE_OFF)
+
         GPIO.output(LOCK_PIN, PULSE_ON)
         sleep(PULSE_SLEEP)
         GPIO.output(LOCK_PIN, PULSE_OFF)
+        GPIO.cleanup(LOCK_PIN)
+
     except Exception as e:
         logger.exception(e)
     
