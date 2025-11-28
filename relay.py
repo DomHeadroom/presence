@@ -1,5 +1,7 @@
 import RPi.GPIO as GPIO
 from time import sleep  
+GPIO.setwarnings(False)
+
 PIN=4
 
 
@@ -16,11 +18,12 @@ GPIO.output(PIN, GPIO.HIGH)
 sleep(2)
 
 
-print ('out 0')
-GPIO.output(PIN, GPIO.LOW)
-sleep(2)
+#print ('out 0')
+#GPIO.output(PIN, GPIO.LOW)
+#sleep(2)
 
 
 print ('cleanup')
-GPIO.cleanup()
+GPIO.cleanup(PIN)
+GPIO.setwarnings(False)
 
