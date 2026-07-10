@@ -26,8 +26,6 @@ SECRET_KEY = 'd((ew0%@e^l1*inklo4wb%iuirnq&&f#kp^#g-ve+n4t=x%%f*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEMPLATE_DEBUG = True
-
 ALLOWED_HOSTS = []
 
 
@@ -44,7 +42,7 @@ INSTALLED_APPS = (
     'gatecontrol',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -68,7 +66,21 @@ ROOT_URLCONF = 'presence.urls'
 
 WSGI_APPLICATION = 'presence.wsgi.application'
 
-TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
@@ -90,9 +102,10 @@ TIME_ZONE = 'CET'
 
 USE_I18N = True
 
-USE_L10N = True
-
 USE_TZ = False
+
+# di default ora viene settato 'BigAutoField' (64 bit) però si deve cambiare pure nel db
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 
 # Static files (CSS, JavaScript, Images)
