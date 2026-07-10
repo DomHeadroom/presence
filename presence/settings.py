@@ -155,7 +155,10 @@ LOGGING = {
 }
 
 
-GATES = {'test' : Gate()}
+GATES = {
+    'internal': Gate(),
+    'external': Gate(),
+}
 
 
 try:
