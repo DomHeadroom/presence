@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('req_state', models.TextField()),
                 ('info', models.TextField()),
                 ('gate', models.TextField(default='unknown')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
             },

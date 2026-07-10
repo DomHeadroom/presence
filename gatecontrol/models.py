@@ -2,6 +2,7 @@
 import datetime
 import logging
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -34,7 +35,7 @@ class RequestManager(models.Manager):
 
 
 class AccessRequest(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     req_time = models.DateTimeField()
     req_state = models.TextField()
     info = models.TextField()
