@@ -5,10 +5,6 @@
 
 {% endblock %} {% block script %}
 
-
-
-
-
 <script type="text/javascript">
         
 	const setOpenHeading = ()=>{
@@ -41,16 +37,13 @@
 {% endblock %} {% block body %}
 
 <div class="site-wrapper">
-
 	<div class="site-wrapper-inner">
-
 		<div class="cover-container">
-
 			<div class="masthead clearfix">
 				<div class="inner">
 					<h3 class="masthead-brand">HLCS</h3>
 					<ul class="nav masthead-nav">
-						<li><a href="/accounts/login/?next=/">Log In</a></li>
+						<li><a href="/accounts/login/?next=/">Accedi</a></li>
 					</ul>
 				</div>
 			</div>
@@ -62,15 +55,11 @@
 					<p>Siamo <strong>aperti</strong>? Fantastico!</p>
 				    <p>Suona l'interno "<strong>Sinope</strong>" (*) e ti apriamo :)</p>
 				    <p><small>(*) Tenere premuto fino a che non sentirete John Lennon.</small></p>
+                </div>
+                <p><a href ="{% url 'about' %}"><small>Ulteriori info su Presence.</small></a></p>
+            </div>
         </div>
-        <p><a href ="{% url 'about' %}"><small>Ulteriori info su Presence.</small></a></p>
-      </div>
-
-
-        </div>
-
-      </div>
-
     </div>
+</div>
 
 {% endblock %}

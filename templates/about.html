@@ -2,16 +2,26 @@
 
 <!-- Custom styles for this template-->
 <link href="{% static 'bootstrap/css/cover.css' %}" rel="stylesheet">
+<style>
+.embed-responsive {
+	width: 100%;
+	max-width: 560px;
+	margin: 0 auto;
+	aspect-ratio: 16 / 9;
+}
+.embed-responsive iframe {
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+</style>
 {% endblock %}
 
 {% block body %}
 
 <div class="site-wrapper">
-
 	<div class="site-wrapper-inner">
-
 		<div class="cover-container">
-
 			<div class="masthead clearfix">
 				<div class="inner">
 					<h3 class="masthead-brand">HLCS</h3>
@@ -22,25 +32,20 @@
 			</div>
 
 			<div class="inner cover">
-				<h1 class="cover-heading"></h1>
-				<p class="lead"></p>
 				<div id="info">
-          <p>Il Presence, una webapp che permette di sapere se c’è qualcuno all’interno del laboratorio e di aprire la porta esterna a chi è abilitato.</p>
-          <iframe width="560" height="315" src="https://www.youtube.com/embed/gqySJz94Evg" frameborder="0"></iframe>
-				    <ul>
-              <li><a href="https://hlcs.it/2014/09/18/presence-door-hacking-con-raspberrypi-e-modem-56k/"><strong>Articolo</strong> su hlcs.it</a></li>
-              <li><a href="https://github.com/hlcs/presence/"><strong>Repository</strong> del codice sorgente.</a></li>
-            </ul>
-            <p><a href="{% url 'home' %}"><small>Torna alla Home Page</small></a></p>
-
+					<p>Il Presence, una webapp che permette di sapere se c’è qualcuno all’interno del laboratorio e di aprire la porta esterna a chi è abilitato.</p>
+					<div class="embed-responsive">
+						<iframe src="https://www.youtube.com/embed/gqySJz94Evg" frameborder="0" allowfullscreen></iframe>
+					</div>
+					<ul>
+						<li><a href="https://hlcs.it/2014/09/18/presence-door-hacking-con-raspberrypi-e-modem-56k/"><strong>Articolo</strong> su hlcs.it</a></li>
+						<li><a href="https://github.com/hlcs/presence/"><strong>Repository</strong> del codice sorgente.</a></li>
+					</ul>
+					<p><a href="{% url 'home' %}"><small>Torna alla Home Page</small></a></p>
                </div>
-
           </div>
-
-
         </div>
-
-      </div>
-
     </div>
+</div>
+
 {% endblock %}

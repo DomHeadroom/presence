@@ -1,33 +1,32 @@
 {% extends "base.html" %}
 
-  {% load static %}
+{% load static %}
  
+{% block title %}Login{% endblock %}
 
-    {% block title %}Login{% endblock %}
+{% block extrastyle %}
 
-	{% block extrastyle %}
-
-    <!-- Custom styles for this template -->
-    <link href="{% static 'bootstrap/css/signin.css' %}" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="{% static 'bootstrap/css/signin.css' %}" rel="stylesheet">
     
-    {% endblock %}
+{% endblock %}
 
- {% block body %}
+{% block body %}
 
-    <div class="container">
+<div class="container">
 
-      <form class="form-signin" role="form" action="{% url 'login' %}" method="post" id="login-form">{% csrf_token %}
-        <h2 class="form-signin-heading">HLCS Presence</h2>
-        <input name="username" type="text" class="form-control" placeholder="Username" required autofocus>
-        <input name="password" type="password" class="form-control" placeholder="Password" required>
-        <input type="hidden" name="this_is_the_login_form" value="1" />
-    	<input type="hidden" name="next" value="{{ next }}" />
-<!--         <label class="checkbox"> -->
-<!--           <input type="checkbox" value="remember-me"> Remember me -->
-<!--         </label> -->
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Accedi</button>
-      </form>
+  <form class="form-signin" role="form" action="{% url 'login' %}" method="post" id="login-form">{% csrf_token %}
+    <h2 class="form-signin-heading">HLCS Presence</h2>
+    <input name="username" type="text" class="form-control" placeholder="Username" required autofocus>
+    <input name="password" type="password" class="form-control" placeholder="Password" required>
+    <input type="hidden" name="this_is_the_login_form" value="1" />
+    <input type="hidden" name="next" value="{{ next }}" />
+    <!--         <label class="checkbox"> -->
+    <!--           <input type="checkbox" value="remember-me"> Remember me -->
+    <!--         </label> -->
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Accedi</button>
+  </form>
 
-    </div> 
+</div> 
     
 {% endblock %}
