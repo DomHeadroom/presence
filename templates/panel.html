@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load staticfiles %}
+{% load static %}
 
 {% block title %}Control Panel{% endblock %} 
 
@@ -226,7 +226,29 @@ margin-top: 8px;
 }
 
 .label {
- text-transform: uppercase; 
+  text-transform: uppercase; 
+}
+
+.logout-link {
+  color: #9d9d9d;
+  padding: 10px 15px;
+  line-height: 20px;
+  display: block;
+  background: none;
+  border: none;
+}
+
+.logout-link:hover,
+.logout-link:focus {
+  color: #fff;
+  text-decoration: none;
+}
+
+@media (min-width: 768px) {
+  .navbar-nav > li > form > button.logout-link {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
 }
 
 </style>
@@ -256,7 +278,13 @@ margin-top: 8px;
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li><a href="/admin">Admin</a></li>
-				<li><a href="/accounts/logout/?next=/">Logout</a></li>
+				<li>
+					<form action="/accounts/logout/" method="post" style="margin:0;padding:0;display:inline;">
+						{% csrf_token %}
+						<input type="hidden" name="next" value="/">
+						<button type="submit" class="logout-link">Logout</button>
+					</form>
+				</li>
 			</ul>
 		</div>
 	</div>
