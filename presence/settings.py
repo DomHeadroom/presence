@@ -98,7 +98,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'it-it'
 
-TIME_ZONE = 'CET'
+TIME_ZONE = 'Europe/Rome'
 
 USE_I18N = True
 

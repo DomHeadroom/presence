@@ -60,7 +60,7 @@ class HpccInternal(Gate):
         return STATE_OPEN if is_open else STATE_CLOSED
     
     def is_from_local_address(self, request):
-        pattern = getattr(settings, 'IP_PATTERN', '10.87.1.\d+')
+        pattern = getattr(settings, 'IP_PATTERN', r'10.87.1.\d+')
         return re.match(pattern, request.address)
     
     def open_gate(self, request=None):
