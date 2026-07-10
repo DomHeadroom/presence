@@ -1,19 +1,18 @@
-from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from django.urls import path, re_path
+from django.contrib.auth import views as auth_views
 
-admin.autodiscover()
+from gatecontrol import views as gatecontrol_views
+from hlcs import views as hlcs_views
 
-urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'presence.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
 
-    url(r'^admin', include(admin.site.urls)),
-    url(r'^accounts/login/$', 'django.contrib.auth.views.login', name='login'),
-    url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', name='logout'),
-    url(r'^gates/(?P<gate_name>\w{0,50})/$', 'gatecontrol.views.gatecontrol', name='control'),
-    url(r'^gates/$', 'gatecontrol.views.get_all_states', name='gates'),
-    url(r'^requests/(?P<gate_name>\w{0,50})/$', 'gatecontrol.views.show_requests', name='requests'),
-    url(r'^about/$', 'hlcs.views.about', name='about'),
-    url(r'^$', 'hlcs.views.homepage', name='home'),
-)
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
+    path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
+    re_path(r'^gates/(?P<gate_name>\w{0,50})/$', gatecontrol_views.gatecontrol, name='control'),
+    re_path(r'^gates/$', gatecontrol_views.get_all_states, name='gates'),
+    re_path(r'^requests/(?P<gate_name>\w{0,50})/$', gatecontrol_views.show_requests, name='requests'),
+    path('about/', hlcs_views.about, name='about'),
+    path('', hlcs_views.homepage, name='home'),
+]
