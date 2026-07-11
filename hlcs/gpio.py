@@ -1,8 +1,9 @@
-'''
+"""
 Created on 08/nov/2014
 
 @author: spax
-'''
+"""
+
 import logging
 
 import RPi.GPIO as GPIO
@@ -14,17 +15,17 @@ logger = logging.getLogger(__name__)
 
 GPIO.setmode(GPIO.BCM)
 
-LOCK_PIN = getattr(settings, 'LOCK_PIN', 4)
-MAGNET_PIN = getattr(settings, 'MAGNET_PIN', 17)
+LOCK_PIN = getattr(settings, "LOCK_PIN", 4)
+MAGNET_PIN = getattr(settings, "MAGNET_PIN", 17)
 
-PULSE_SLEEP = getattr(settings, 'PULSE_SLEEP', 1)
-PULSE_ON = getattr(settings, 'PULSE_ON', 0)
-PULSE_OFF = getattr(settings, 'PULSE_OFF', 1)
+PULSE_SLEEP = getattr(settings, "PULSE_SLEEP", 1)
+PULSE_ON = getattr(settings, "PULSE_ON", 0)
+PULSE_OFF = getattr(settings, "PULSE_OFF", 1)
 
 GPIO.setwarnings(False)
 
-GPIO.setup(MAGNET_PIN, GPIO.IN)  
-    
+GPIO.setup(MAGNET_PIN, GPIO.IN)
+
 
 def magnet_input():
     try:
@@ -32,7 +33,7 @@ def magnet_input():
     except Exception as e:
         logger.exception(e)
         return False
-    
+
 
 def send_open_pulse():
     try:
@@ -46,9 +47,3 @@ def send_open_pulse():
 
     except Exception as e:
         logger.exception(e)
-    
-
-
-
-
-    

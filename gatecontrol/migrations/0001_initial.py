@@ -6,24 +6,35 @@ from django.conf import settings
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AccessRequest',
+            name="AccessRequest",
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
-                ('req_time', models.DateTimeField()),
-                ('req_state', models.TextField()),
-                ('info', models.TextField()),
-                ('gate', models.TextField(default='unknown')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
+                (
+                    "id",
+                    models.AutoField(
+                        verbose_name="ID",
+                        serialize=False,
+                        primary_key=True,
+                        auto_created=True,
+                    ),
+                ),
+                ("req_time", models.DateTimeField()),
+                ("req_state", models.TextField()),
+                ("info", models.TextField()),
+                ("gate", models.TextField(default="unknown")),
+                (
+                    "user",
+                    models.ForeignKey(
+                        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+                    ),
+                ),
             ],
-            options={
-            },
+            options={},
             bases=(models.Model,),
         ),
     ]

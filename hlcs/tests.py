@@ -1,4 +1,3 @@
-
 from mock import Mock, MagicMock
 
 from django.test import TestCase
@@ -10,7 +9,6 @@ from hlcs.modem import AtlantisModem
 
 
 class TestAtlantisModemController(TestCase):
-    
     def testDone(self):
         request = Mock()
         serial = Mock()
@@ -21,18 +19,18 @@ class TestAtlantisModemController(TestCase):
         serial.readline = MagicMock(return_value=modem.MSG_BUSY)
         controller.run()
         request.done.assert_called_with()
-        
+
     def testFail(self):
         request = Mock()
-        
+
         try:
             serial = Serial(AtlantisModem.PORT, baudrate=AtlantisModem.BAUDRATE)
         except SerialException:
             serial = Mock()
             serial.readline = MagicMock(return_value=modem.MSG_OK)
             serial.read = MagicMock(return_value=None)
-            
+
         controller = modem.AtlantisModemController(serial)
         controller.setup(request)
         controller.run()
-        request.fail.assert_called_with('no RING received')
+        request.fail.assert_called_with("no RING received")
