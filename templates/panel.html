@@ -26,11 +26,7 @@ function getCookie(name) {
 }
 const csrftoken = getCookie("csrftoken");
 
-function csrfSafeMethod(method) {
-  // these HTTP methods do not require CSRF protection
-  return /^(GET|HEAD|OPTIONS|TRACE)$/.test(method);
-}
- async function fetchWithCsrf(url, options = {}) {
+async function fetchWithCsrf(url, options = {}) {
   const method = options.method ? options.method.toUpperCase() : "GET";
   const headers = new Headers(options.headers || {});
   headers.set("X-CSRFToken", csrftoken);
@@ -55,6 +51,7 @@ const strings = {
   years: "%d anni",
   open: "aperta",
   closed: "chiusa",
+  ring: "suona",
   error: "errore",
 };
 
@@ -127,7 +124,7 @@ async function openExternal() {
     const body = await header.json();
     if (body) waitRing(body);
   } catch (e) {
-    setError(e);
+    setError("#external-status");
   }
 }
 
@@ -152,7 +149,7 @@ function updateLabel(label_id, state) {
 }
 
 function waitRing(response) {
-  document.getElementById("#external-button").disabled = true;
+  document.querySelector("#external-button").disabled = true;
   const endpoint = "/gates/external/" + "?req_id=" + response.req_id;
   const interval = setInterval(async function () {
     try {
@@ -162,7 +159,7 @@ function waitRing(response) {
       if (response.pending == false) clearInterval(interval);
     } catch (e) {
       setError("#external-status");
-      document.getElementById("#external-button").disabled = true;
+      document.querySelector("#external-button").disabled = true;
     }
   }, 1000);
 }
