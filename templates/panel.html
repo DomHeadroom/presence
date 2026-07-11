@@ -39,24 +39,26 @@ function csrfSafeMethod(method) {
   return fetch(url, options);
 }
 
-function timeAgo(dateAttr) {
-  // Italian strings configuration
-  const strings = {
-    suffixAgo: "fa",
-    suffixFromNow: "da ora",
-    seconds: "meno di un minuto",
-    minute: "circa un minuto",
-    minutes: "%d minuti",
-    hour: "circa un'ora",
-    hours: "circa %d ore",
-    day: "un giorno",
-    days: "%d giorni",
-    month: "circa un mese",
-    months: "%d mesi",
-    year: "circa un anno",
-    years: "%d anni",
-  };
+const strings = {
+  suffixAgo: "fa",
+  suffixFromNow: "da ora",
+  seconds: "meno di un minuto",
+  minute: "circa un minuto",
+  minutes: "%d minuti",
+  hour: "circa un'ora",
+  hours: "circa %d ore",
+  day: "un giorno",
+  days: "%d giorni",
+  month: "circa un mese",
+  months: "%d mesi",
+  year: "circa un anno",
+  years: "%d anni",
+  open: "aperta",
+  closed: "chiusa",
+  error: "errore",
+};
 
+function timeAgo(dateAttr) {
   const date = new Date(dateAttr);
   if (isNaN(date.getTime())) return; // Handle invalid dates
 
@@ -107,7 +109,6 @@ function timeAgo(dateAttr) {
   if (units) {
     timeString = units.replace(/%d/i, unitValue);
   }
-   console.log(timeString);
   // Append the suffix
   const suffix = isPast ? strings.suffixAgo : strings.suffixFromNow;
   return `${timeString} ${suffix}`;
@@ -117,7 +118,7 @@ function setError(label_id) {
   const label = document.querySelector(label_id);
   label.classList.remove("label-default", "label-warning", "label-success");
   label.classList.add("label-danger");
-  label.innerText = "error";
+  label.innerText = strings.error;
 }
 
 async function openExternal() {
@@ -143,7 +144,7 @@ function updateLabel(label_id, state) {
     "label-success",
     "label-danger",
   );
-  label.innerText = state.description;
+  label.innerText = strings[state.description];
 
   if (state.id == 0) label.classList.add("label-default");
   else if (state.id == 1) label.classList.add("label-success");
@@ -301,7 +302,7 @@ margin-top: 8px;
 					<h3 class="panel-title">Porta Interna</h3>
 				</div>
 				<div class="panel-body">
-					<div style="float: left"><h3><span class="label label-default" id="internal-status">chiuso</span></h3></div>
+					<div style="float: left"><h3><span class="label label-default" id="internal-status">chiusa</span></h3></div>
 					<div style="float: right"><button id="internal-button" onclick="openInternal()" {{ options }} class="btn btn-lg btn-primary" type="button">Apri</button></div>
 				</div>
 			</div>
@@ -311,7 +312,7 @@ margin-top: 8px;
 					<h3 class="panel-title">Porta Esterna</h3>
 				</div>
 				<div class="panel-body">
-					<div style="float: left"><h3><span class="label label-default" id="external-status">chiuso</span></h3></div>
+					<div style="float: left"><h3><span class="label label-default" id="external-status">chiusa</span></h3></div>
 					<div style="float: right"><button id="external-button" onclick="openExternal()" class="btn btn-lg btn-primary" type="button">Apri</button></div>
 				</div>
 			</div>
@@ -321,7 +322,7 @@ margin-top: 8px;
 		<div class="col-sm-2">
 			<div class="panel panel-primary">
 				<div class="panel-heading">
-					<h3 class="panel-title">Ultimi ingressi</h3>
+					<h3 class="panel-title">Ultimi Ingressi</h3>
 				</div>
 				<div id="requests" class="panel-body">
 				</div>
