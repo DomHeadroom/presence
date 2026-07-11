@@ -42,7 +42,7 @@ class AccessRequest(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     req_time = models.DateTimeField()
     req_state = models.TextField()
-    info = models.TextField()
+    info = models.TextField(default="")
     gate = models.TextField(default="unknown")
     address = models.TextField(default="unknown")
     objects = RequestManager()

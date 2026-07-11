@@ -18,7 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import sys
 import threading
 
-import serial, logging
+import serial
+import logging
 import time
 
 

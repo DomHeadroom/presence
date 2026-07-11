@@ -6,8 +6,9 @@
 
 /*! normalize.css v3.0.0 | MIT License | git.io/normalize */
 html {
-    font-family: sans-serif;
-    -webkit-text-size-adjust: 100%
+    -webkit-text-size-adjust: 100%;
+    font-size: 62.5%;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
 }
 
 body {
@@ -43,15 +44,14 @@ h1 {
     margin: .67em 0
 }
 
-small {
-    font-size: 80%
-}
-
 button,
 input {
     color: inherit;
     font: inherit;
-    margin: 0
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit
 }
 
 button {
@@ -99,24 +99,12 @@ input[type=checkbox] {
     box-sizing: border-box
 }
 
-html {
-    font-size: 62.5%;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
-}
-
 body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 14px;
     line-height: 1.42857143;
     color: #333;
     background-color: #fff
-}
-
-input,
-button {
-    font-family: inherit;
-    font-size: inherit;
-    line-height: inherit
 }
 
 a {
@@ -128,12 +116,6 @@ a:hover,
 a:focus {
     color: #2a6496;
     text-decoration: underline
-}
-
-a:focus {
-    outline: thin dotted;
-    outline: 5px auto -webkit-focus-ring-color;
-    outline-offset: -2px
 }
 
 .sr-only {
@@ -374,6 +356,7 @@ input[type=checkbox][disabled],
     user-select: none
 }
 
+a:focus,
 .btn:focus,
 .btn:active:focus,
 .btn.active:focus {
