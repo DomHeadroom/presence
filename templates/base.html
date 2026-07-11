@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="it">
   <head>
+    {% load static %}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" type="image/x-icon" href="static/favicon.ico">
-    
-     {% load static %}
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
 
     <title>HLCS Presence{% block title %}{% endblock %}</title>
     
