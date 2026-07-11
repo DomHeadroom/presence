@@ -130,7 +130,12 @@ async function openExternal() {
 
 async function openInternal() {
   document.getElementById("internal-button").disabled = true;
-  const header = await fetchWithCsrf("/gates/internal/", { method: "POST" });
+  try {
+    await fetchWithCsrf("/gates/internal/", { method: "POST" });
+  } catch (e) {
+    setError("#internal-status");
+    document.getElementById("internal-button").disabled = false;
+  }
 }
 
 function updateLabel(label_id, state) {
@@ -168,33 +173,35 @@ async function update() {
   try {
     const headerGateInternal = await fetch("/gates/internal/?limit=5");
     const bodyGateInternal = await headerGateInternal.json();
-    updateLabel("#internal-status",bodyGateInternal);
+    updateLabel("#internal-status", bodyGateInternal);
   } catch (e) {
     console.error(e);
     setError("#internal-status");
   }
 
-  const headerReqInternal = await fetch("/requests/internal/?limit=5");
-  const bodyReqInternal = await headerReqInternal.json();
-  document.querySelector("#requests").innerHTML = "";
-  document.querySelector("#requests").innerHTML = bodyReqInternal
-    .map((resp) => {
-      const user = `<div class="user">${resp.user}</div>`;
-      const date = `<div class="timeago" >${timeAgo(resp.time)}</div>`;
-      const entry = `<div class="entry">${user}${date}</div>`;
-      return entry;
-    })
-    .join("");
+  try {
+    const headerReqInternal = await fetch("/requests/internal/?limit=5");
+    const bodyReqInternal = await headerReqInternal.json();
+    document.querySelector("#requests").innerHTML = bodyReqInternal
+      .map((resp) => {
+        const user = `<div class="user">${resp.user}</div>`;
+        const date = `<div class="timeago" >${timeAgo(resp.time)}</div>`;
+        const entry = `<div class="entry">${user}${date}</div>`;
+        return entry;
+      })
+      .join("");
+  } catch (e) {
+    console.error(e);
+  }
 }
 
-window.onload = () => {
+window.addEventListener("load", () => {
   update();
   setInterval(update, 5000);
-document.querySelector(".navbar-toggle").onclick = ()=>{
+  document.querySelector(".navbar-toggle").onclick = () => {
     document.querySelector("#navbar").classList.toggle("collapse");
-    
-  }
-};
+  };
+});
 
 	
 </script>
