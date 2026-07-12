@@ -1,5 +1,6 @@
 *env*
 *Env*
+!.env.example
 db.*
 *.log
 *.pyc

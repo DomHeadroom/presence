@@ -171,12 +171,17 @@ function waitRing(response) {
 
 async function update() {
   try {
-    const headerGateInternal = await fetch("/gates/internal/?limit=5");
-    const bodyGateInternal = await headerGateInternal.json();
-    updateLabel("#internal-status", bodyGateInternal);
+    const headerGates = await fetch("/gates/");
+    const bodyGates = await headerGates.json();
+    for (const gate of bodyGates) {
+      const [name, state] = Object.entries(gate)[0];
+      const labelId = name === "internal" ? "#internal-status" : "#external-status";
+      updateLabel(labelId, state);
+    }
   } catch (e) {
     console.error(e);
     setError("#internal-status");
+    setError("#external-status");
   }
 
   try {
