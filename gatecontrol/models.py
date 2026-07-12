@@ -35,7 +35,7 @@ class RequestManager(models.Manager):
 
     def get_pending_request(self, gate_name):
         results = self.filter(req_state=REQUEST_STATE_PENDING, gate=gate_name)
-        return results[0] if len(results) > 0 else None
+        return results.first()
 
 
 class AccessRequest(models.Model):
