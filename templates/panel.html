@@ -120,7 +120,7 @@ function setError(label_id) {
 
 async function openExternal() {
   try {
-    const header = await fetchWithCsrf("/gates/external/", { method: "POST" });
+    const header = await fetchWithCsrf("/gates/external/open/", { method: "POST" });
     const body = await header.json();
     if (body) waitRing(body);
   } catch (e) {
@@ -131,7 +131,7 @@ async function openExternal() {
 async function openInternal() {
   document.getElementById("internal-button").disabled = true;
   try {
-    await fetchWithCsrf("/gates/internal/", { method: "POST" });
+    await fetchWithCsrf("/gates/internal/open/", { method: "POST" });
   } catch (e) {
     setError("#internal-status");
     document.getElementById("internal-button").disabled = false;

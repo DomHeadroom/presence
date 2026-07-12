@@ -17,20 +17,28 @@ def get_all_states(request):
     return JsonResponse(response, safe=False)
 
 
-@api_view(["GET", "POST"])
-def gatecontrol(request, gate_name):
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def gatecontrol_get(request, gate_name):
     gates = getattr(settings, "GATES")
     if gates is None or gate_name not in gates:
         raise Http404
     gate = gates[gate_name]
-    if request.method == "GET":
-        return _get_state(gate, request.GET.get("req_id", None))
-    elif request.method == "POST":
-        address = request.META.get("HTTP_X_FORWARDED_FOR") or request.META.get("REMOTE_ADDR", "unknown")
-        r = AccessRequest.objects.get_or_create(
-            request.user, address, gate, gate_name
-        )
-        return JsonResponse({"req_id": r.id})
+    return _get_state(gate, request.GET.get("req_id", None))
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def gatecontrol_post(request, gate_name):
+    gates = getattr(settings, "GATES")
+    if gates is None or gate_name not in gates:
+        raise Http404
+    gate = gates[gate_name]
+    address = request.META.get("HTTP_X_FORWARDED_FOR") or request.META.get("REMOTE_ADDR", "unknown")
+    r = AccessRequest.objects.get_or_create(
+        request.user, address, gate, gate_name
+    )
+    return JsonResponse({"req_id": r.id})
 
 
 @api_view(["GET"])
