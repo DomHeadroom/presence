@@ -10,10 +10,10 @@ Home automation system for controlling doors electronically and logging accesses
 sudo apt install python3-venv
 ```
 
-1. Create a python3.4 virtualenv inside project's directory and activate it
+1. Create a Python 3.13.5 virtualenv inside project's directory and activate it
 
 ```sh
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate
 ```
 
@@ -26,13 +26,13 @@ pip install -r requirements-dev.txt
 3. Create the db. Default is sqlite, you will be asked to create a superuser
 
 ```sh
-python manage.py migrate
+python3 manage.py migrate
 ```
 
 4. You are now able to run the app. The webserver will be available at the specified port.
 
 ```sh
-python manage.py runserver 8080
+python3 manage.py runserver 8080
 ```
 
 ## Modules
@@ -47,7 +47,7 @@ The available doors (`internal` and `external`) are defined in the `GATES` dicti
 List the doors and their state by running the server and querying it
 
 ```sh
-python manage.py runserver 8080
+python3 manage.py runserver 8080
 curl http://localhost:8080/gates/
 ```
 
