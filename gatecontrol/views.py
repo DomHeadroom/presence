@@ -8,7 +8,8 @@ from gatecontrol.models import AccessRequest
 
 
 ### JSON API ###
-@permission_classes([AllowAny])
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def get_all_states(request):
     gates = getattr(settings, "GATES", {})
     response = []
@@ -34,6 +35,7 @@ def gatecontrol_post(request, gate_name):
     if gates is None or gate_name not in gates:
         raise Http404
     gate = gates[gate_name]
+    # TODO: DA TESTARE
     address = request.META.get("HTTP_X_FORWARDED_FOR") or request.META.get("REMOTE_ADDR", "unknown")
     r = AccessRequest.objects.get_or_create(
         request.user, address, gate, gate_name
