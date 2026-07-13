@@ -42,23 +42,17 @@ python manage.py runserver 8080
 
 ## Usage
 
-1. Extend the `gatecontrol.gatecontrol.Gate` class in order to support your hardware
+The available doors (`internal` and `external`) are defined in the `GATES` dictionary in `presence/settings.py`.
 
-2. Include it in the GATES dictionary in settings.py
-
-```python
-GATES = {<unique-name>: <Instance of your Gate>}
-```
-
-3. You can then list your doors by running the server and querying it
+List the doors and their state by running the server and querying it
 
 ```sh
 python manage.py runserver 8080
 curl http://localhost:8080/gates/
 ```
 
-4. To issue the `open_gate` command send an authenticated POST request at the relative endpoint
+To issue the `open_gate` command send an authenticated POST request at the relative endpoint
 
 ```sh
-curl -X POST http://localhost:8080/gates/<unique-name>/open/
+curl -X POST http://localhost:8080/gates/internal/open/
 ```

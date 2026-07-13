@@ -4,8 +4,6 @@ Created on 08/nov/2014
 @author: spax
 """
 
-import sys
-
 from gatecontrol.gatecontrol import Gate, STATE_CLOSED, STATE_OPEN
 from hlcs.modem import AtlantisModem
 from django.conf import settings
@@ -44,19 +42,13 @@ class HpccExternal(Gate):
 
 
 class HpccInternal(Gate):
-    def __init__(self):
-        try:
-            from hlcs.gpio import magnet_input, send_open_pulse
-
-            self.magnet_input = magnet_input
-            self.send_open_pulse = send_open_pulse
-        except Exception as e:
-            print("ERROR: could not setup %s: %s" % (HpccInternal.__name__, str(e)))
-            sys.exit(1)
-
+    # RPi.GPIO viene importato dentro i metodi, non nell'__init__: così
+    # istanziare HpccInternal non tocca l'hardware e la classe resta
+    # importabile anche fuori dal Raspberry (dev, CI, migrations).
     def get_state(self, request=None):
-        is_open = self.magnet_input()
-        return STATE_OPEN if is_open else STATE_CLOSED
+        from hlcs.gpio import magnet_input
+
+        return STATE_OPEN if magnet_input() else STATE_CLOSED
 
     def is_from_local_address(self, request):
         pattern = getattr(settings, "IP_PATTERN", r"10.87.1.\d+")
@@ -69,7 +61,9 @@ class HpccInternal(Gate):
             elif not self.is_from_local_address(request):
                 request.fail("Source is not local")
             elif request.user.is_staff:
-                self.send_open_pulse()
+                from hlcs.gpio import send_open_pulse
+
+                send_open_pulse()
                 self.state = STATE_OPEN
                 request.done()
             else:

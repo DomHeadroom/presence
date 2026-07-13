@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
-from gatecontrol.gatecontrol import Gate
+from hlcs.gates import HpccExternal, HpccInternal
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -151,8 +151,8 @@ LOGGING = {
 
 
 GATES = {
-    "internal": Gate(),
-    "external": Gate(),
+    "internal": HpccInternal(),
+    "external": HpccExternal(),
 }
 
 
