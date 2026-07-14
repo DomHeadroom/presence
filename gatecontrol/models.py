@@ -16,7 +16,7 @@ class RequestManager(models.Manager):
     def request_access(self, user, address, gate, gate_name):
         access_request = self.get_pending_request(gate_name)
         if access_request is None:
-            logger.info("user %s requested access" % user.username)
+            logger.info(f"user {user.username} requested access")
             access_request = AccessRequest(
                 user=user,
                 gate=gate_name,

@@ -76,7 +76,7 @@ class AtlantisModem(Modem):
             s = self._get_serial()
             s.close()
         except Exception as e:
-            print("ERROR: %s: %s" % (__name__, str(e)))
+            print(f"ERROR: {__name__}: {str(e)}")
             sys.exit(1)
 
     def get_controller(self):
@@ -104,7 +104,7 @@ class AtlantisModemController(threading.Thread, ModemController):
 
             logger.debug("sending init commands to modem..")
             for c in INIT_COMMANDS:
-                logger.debug("sending %s" % c)
+                logger.debug(f"sending {c}")
                 self.serial.write(c)
                 logger.debug("reading echo")
                 echo = self.serial.readline()  # echo
@@ -113,7 +113,7 @@ class AtlantisModemController(threading.Thread, ModemController):
                 else:
                     ok = self.serial.readline()
                     if ok != MSG_OK:
-                        raise IOError("error at comand: %s" % c)
+                        raise IOError(f"error at comand: {c}")
 
             self.serial.setTimeout(timeout)
             logger.debug("setup complete, controller in listen mode")
@@ -137,12 +137,12 @@ class AtlantisModemController(threading.Thread, ModemController):
                 self.serial.write(MSG_OPEN)
                 while lineIn != MSG_BUSY and len(lineIn) > 0:
                     lineIn = self.serial.readline()
-                    logger.debug("modem: %s" % lineIn.rstrip())
+                    logger.debug(f"modem: {lineIn.rstrip()}")
                 if lineIn == MSG_BUSY:
                     logger.info("door opened")
                     self.request.done()
                 else:
-                    msg = "invalid input: %s" % lineIn.rstrip()
+                    msg = f"invalid input: {lineIn.rstrip()}"
                     logger.error(msg)
                     self.request.info = msg
             else:
