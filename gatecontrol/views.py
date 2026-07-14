@@ -32,9 +32,7 @@ def get_client_ip(request):
 @permission_classes([IsAuthenticated])
 def get_all_states(request):
     gates = getattr(settings, "GATES", {})
-    response = []
-    for g in gates.keys():
-        response.append({g: gates[g].get_state()})
+    response = [{g: gates[g].get_state()} for g in gates]
     return JsonResponse(response, safe=False)
 
 
@@ -73,11 +71,13 @@ def show_requests(request, gate_name):
     except ValueError:
         return HttpResponseBadRequest()
     access_requests = AccessRequest.objects.get_last_accesses(gate_name, limit)
-    response = []
-    for r in access_requests:
-        response.append(
-            {"time": r.req_time.strftime("%Y-%m-%dT%H:%M:%S"), "user": r.user.username}
-        )
+    response = [
+        {
+            "time": r.req_time.strftime("%Y-%m-%dT%H:%M:%S"),
+            "user": r.user.username,
+        }
+        for r in access_requests
+    ]
     return JsonResponse(response, safe=False)
 
 
