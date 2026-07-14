@@ -1,4 +1,4 @@
-from mock import Mock, MagicMock
+from unittest.mock import Mock, MagicMock
 
 from django.test import TestCase
 from serial.serialutil import SerialException

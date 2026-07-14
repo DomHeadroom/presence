@@ -13,7 +13,7 @@ REQUEST_STATE_FAIL = "FAIL"
 
 
 class RequestManager(models.Manager):
-    def get_or_create(self, user, address, gate, gate_name):
+    def request_access(self, user, address, gate, gate_name):
         access_request = self.get_pending_request(gate_name)
         if access_request is None:
             logger.info("user %s requested access" % user.username)

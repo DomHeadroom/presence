@@ -37,7 +37,7 @@ def gatecontrol_post(request, gate_name):
     gate = gates[gate_name]
     # TODO: DA TESTARE
     address = request.META.get("HTTP_X_FORWARDED_FOR") or request.META.get("REMOTE_ADDR", "unknown")
-    r = AccessRequest.objects.get_or_create(
+    r = AccessRequest.objects.request_access(
         request.user, address, gate, gate_name
     )
     return JsonResponse({"req_id": r.id})

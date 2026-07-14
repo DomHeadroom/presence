@@ -1,10 +1,10 @@
 import json
 import time
-from mock import MagicMock
+from unittest.mock import MagicMock
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase, Client
 
 from gatecontrol.gatecontrol import Gate, STATE_CLOSED
@@ -16,7 +16,7 @@ class TestViews(TestCase):
 
     def parse_response(self, response):
         self.assertEqual(200, response.status_code)
-        return json.loads(response.content.decode(response._charset))
+        return response.json()
 
     def setUp(self):
         TestCase.setUp(self)
@@ -35,10 +35,10 @@ class TestViews(TestCase):
 
     def test_gatecontrol(self):
         expected = {"req_id": 2}
-        response = self.client.post(reverse("control", args=("test",)))
+        response = self.client.post(reverse("gate-open", args=("test",)))
         req_id = self.parse_response(response)
         self.assertEqual(expected, req_id)
-        response = self.client.get(reverse("control", args=("test",)), data=req_id)
+        response = self.client.get(reverse("gate-state", args=("test",)), data=req_id)
         expected = {"description": "closed", "id": 0}
         actual = self.parse_response(response)
         self.assertEqual(expected.keys(), actual.keys())
@@ -57,15 +57,15 @@ class TestManager(TestCase):
         self.user = User.objects.get(pk=1)
 
     def test_get_pending_request(self):
-        r1 = AccessRequest.objects.get_or_create(self.user, MagicMock(), "test")
-        self.assertEquals(r1, AccessRequest.objects.get_pending_request("test"))
+        r1 = AccessRequest.objects.request_access(self.user, "127.0.0.1", MagicMock(), "test")
+        self.assertEqual(r1, AccessRequest.objects.get_pending_request("test"))
 
     def test_get_last_accesses(self):
         u = self.user
-        r1 = AccessRequest.objects.get_or_create(u, Gate(), "test")
+        r1 = AccessRequest.objects.request_access(u, "127.0.0.1", Gate(), "test")
         r1.done()
         time.sleep(1)
-        r2 = AccessRequest.objects.get_or_create(u, Gate(), "test")
+        r2 = AccessRequest.objects.request_access(u, "127.0.0.1", Gate(), "test")
         r2.done()
         accesses = [a.id for a in AccessRequest.objects.get_last_accesses("test")]
-        self.assertEquals([r2.id, r1.id], accesses)
+        self.assertEqual([r2.id, r1.id], accesses)
