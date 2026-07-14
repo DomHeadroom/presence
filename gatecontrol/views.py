@@ -7,6 +7,26 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from gatecontrol.models import AccessRequest
 
 
+def get_client_ip(request):
+    """IP reale del client dall'header X-Forwarded-For.
+
+    L'XFF e' una catena ``client, proxy1, proxy2, ...``: il client vero sta a
+    sinistra, ogni reverse proxy si aggiunge a destra. Prendere il primo
+    elemento (``xff.split(',')[0]``, come fanno gli snippet in giro) e'
+    spoofabile perche' quella posizione la imposta chi manda la richiesta;
+    prendere l'ultimo darebbe il proxy. Quindi togliamo dalla catena i proxy
+    noti (``settings.TRUSTED_PROXIES``) e teniamo l'ultimo IP rimasto: e' il
+    primo, partendo da destra, che non e' un nostro proxy. Se non resta nulla
+    (catena vuota, o tutta di proxy nostri) usiamo REMOTE_ADDR, che non e'
+    falsificabile a livello applicativo.
+    """
+    trusted = set(getattr(settings, "TRUSTED_PROXIES", []))
+    xff = request.META.get("HTTP_X_FORWARDED_FOR", "")
+    hops = [ip.strip() for ip in xff.split(",") if ip.strip()]
+    client_hops = [ip for ip in hops if ip not in trusted]
+    return client_hops[-1] if client_hops else request.META.get("REMOTE_ADDR")
+
+
 ### JSON API ###
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -35,8 +55,7 @@ def gatecontrol_post(request, gate_name):
     if gates is None or gate_name not in gates:
         raise Http404
     gate = gates[gate_name]
-    # TODO: DA TESTARE
-    address = request.META.get("HTTP_X_FORWARDED_FOR") or request.META.get("REMOTE_ADDR", "unknown")
+    address = get_client_ip(request) or "unknown"
     r = AccessRequest.objects.request_access(
         request.user, address, gate, gate_name
     )

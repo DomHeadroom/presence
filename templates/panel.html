@@ -178,6 +178,11 @@ async function update() {
       const [name, state] = Object.entries(gate)[0];
       const labelId = name === "internal" ? "#internal-status" : "#external-status";
       updateLabel(labelId, state);
+      if (name === "internal") {
+        const button = document.getElementById("internal-button");
+        const allowed = button.dataset.allowed === "true";
+        button.disabled = !allowed || state.id === 1;
+      }
     }
   } catch (e) {
     console.error(e);
@@ -313,7 +318,7 @@ margin-top: 8px;
 				</div>
 				<div class="panel-body">
 					<div style="float: left"><h3><span class="label label-default" id="internal-status">chiusa</span></h3></div>
-					<div style="float: right"><button id="internal-button" onclick="openInternal()" {{ options }} class="btn btn-lg btn-primary" type="button">Apri</button></div>
+					<div style="float: right"><button id="internal-button" onclick="openInternal()" {{ options }} data-allowed="{{ internal_allowed|yesno:'true,false' }}" class="btn btn-lg btn-primary" type="button">Apri</button></div>
 				</div>
 			</div>
 			

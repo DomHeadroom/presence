@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.urls import reverse
-from django.test import TestCase, Client
+from django.test import TestCase, Client, override_settings
 
 from gatecontrol.gatecontrol import Gate, STATE_CLOSED
 from gatecontrol.models import AccessRequest
@@ -47,6 +47,26 @@ class TestViews(TestCase):
         actual = self.parse_response(response)[0]
         expected = {"user": "admin", "time": "2015-03-01T17:28:18"}
         self.assertEqual(expected.keys(), actual.keys())
+
+    @override_settings(TRUSTED_PROXIES=["10.87.1.1"])
+    def test_forwarded_for_ignores_spoofed_prefix(self):
+        # client falso a sinistra, client reale (visto dal proxy) in mezzo,
+        # proxy fidato in coda: deve vincere il reale, non il falso.
+        self.client.post(
+            reverse("gate-open", args=("test",)),
+            HTTP_X_FORWARDED_FOR="10.87.1.5, 203.0.113.9, 10.87.1.1",
+        )
+        r = AccessRequest.objects.filter(gate="test").order_by("-id").first()
+        self.assertEqual("203.0.113.9", r.address)
+
+    @override_settings(TRUSTED_PROXIES=["10.87.1.1"])
+    def test_forwarded_for_onsite(self):
+        self.client.post(
+            reverse("gate-open", args=("test",)),
+            HTTP_X_FORWARDED_FOR="10.87.1.130, 10.87.1.1",
+        )
+        r = AccessRequest.objects.filter(gate="test").order_by("-id").first()
+        self.assertEqual("10.87.1.130", r.address)
 
 
 class TestManager(TestCase):

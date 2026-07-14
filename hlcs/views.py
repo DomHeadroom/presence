@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.conf import settings
 import re
 
+from gatecontrol.views import get_client_ip
+
 
 """
 Renders an HTML homepage
@@ -9,23 +11,23 @@ Renders an HTML homepage
 
 
 def homepage(request):
-    if request.user.is_authenticated:
-        options = 'disabled="disabled"' if _disable_internal_button(request) else ""
-        return render(request, "panel.html", {"options": options})
-    else:
+    if not request.user.is_authenticated:
         return render(request, "index.html")
-
-
-def _disable_internal_button(request):
     gates = getattr(settings, "GATES", {})
     internal = gates["internal"]
-    address = str(request.META.get("HTTP_X_FORWARDED_FOR"))
-    pattern = getattr(settings, "IP_PATTERN", r"10.87.1.\d+")
-    return (
-        not request.user.is_staff
-        or internal.is_open()
-        or not re.match(pattern, address)
+    allowed = _internal_allowed(request)
+    options = "" if allowed and not internal.is_open() else 'disabled="disabled"'
+    return render(
+        request,
+        "panel.html",
+        {"options": options, "internal_allowed": allowed},
     )
+
+
+def _internal_allowed(request):
+    ip = get_client_ip(request)
+    pattern = getattr(settings, "IP_PATTERN", r"10.87.1.\d+")
+    return bool(request.user.is_staff and ip and re.match(pattern, ip))
 
 
 def about(request):
