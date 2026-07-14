@@ -27,12 +27,13 @@ function getCookie(name) {
 const csrftoken = getCookie("csrftoken");
 
 async function fetchWithCsrf(url, options = {}) {
-  const method = options.method ? options.method.toUpperCase() : "GET";
   const headers = new Headers(options.headers || {});
   headers.set("X-CSRFToken", csrftoken);
   options.headers = headers;
 
-  return fetch(url, options);
+  const response = await fetch(url, options);
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response;
 }
 
 const strings = {
