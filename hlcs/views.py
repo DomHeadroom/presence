@@ -26,7 +26,7 @@ def homepage(request):
 
 def _internal_allowed(request):
     ip = get_client_ip(request)
-    pattern = getattr(settings, "IP_PATTERN", r"10.87.1.\d+")
+    pattern = getattr(settings, "IP_PATTERN", r"^10\.87\.1\.\d{1,3}$")
     return bool(request.user.is_staff and ip and re.match(pattern, ip))
 
 

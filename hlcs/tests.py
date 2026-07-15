@@ -6,6 +6,26 @@ from serial import Serial
 
 from hlcs import modem
 from hlcs.modem import AtlantisModem
+from hlcs.gates import HpccInternal
+
+
+class TestLocalAddress(TestCase):
+    def _is_local(self, address):
+        return HpccInternal().is_from_local_address(Mock(address=address))
+
+    def test_lan_ip_is_local(self):
+        self.assertTrue(self._is_local("10.87.1.130"))
+
+    def test_public_ip_not_local(self):
+        self.assertFalse(self._is_local("203.0.113.9"))
+
+    def test_escaped_dots(self):
+        # con i punti non escapati questa stringa passerebbe come "locale"
+        self.assertFalse(self._is_local("10X87X1X5"))
+
+    def test_no_trailing_garbage(self):
+        # l'ancora finale impedisce che una coda spuria venga accettata
+        self.assertFalse(self._is_local("10.87.1.5.evil.com"))
 
 
 class TestAtlantisModemController(TestCase):
