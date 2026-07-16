@@ -100,6 +100,9 @@ TIME_ZONE = "Europe/Rome"
 
 USE_I18N = True
 
+# il db di produzione contiene datetime in ora locale
+# (Europe/Rome) e l'app è mono-timezone; passare a True richiede una
+# migrazione delle date già presenti
 USE_TZ = False
 
 # di default ora viene settato 'BigAutoField' (64 bit) però si deve cambiare pure nel db

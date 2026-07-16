@@ -1,8 +1,8 @@
-import datetime
 import logging
 
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 
 logger = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ class RequestManager(models.Manager):
                 user=user,
                 gate=gate_name,
                 address=address,
-                req_time=datetime.datetime.now(),
+                req_time=timezone.now(),
                 req_state=REQUEST_STATE_PENDING,
             )
             gate.open_gate(access_request)
