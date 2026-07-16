@@ -1,0 +1,3 @@
+# Dipendenze per il deployment su Raspberry Pi (hardware GPIO reale).
+-r requirements.txt
+rpi-lgpio==0.6

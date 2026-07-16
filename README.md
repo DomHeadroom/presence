@@ -23,6 +23,12 @@ source venv/bin/activate
 pip install -r requirements-dev.txt
 ```
 
+On the Raspberry Pi that drives the real gates, install the hardware requirements instead. This pulls in `rpi-lgpio`; it requires kernel >= 5.11 and must not be installed alongside the classic `RPi.GPIO`.
+
+```sh
+pip install -r requirements-rpi.txt
+```
+
 3. Create the db. Default is sqlite, you will be asked to create a superuser
 
 ```sh
