@@ -7,7 +7,7 @@ PIN = 4
 
 
 GPIO.setmode(GPIO.BCM)
-print("mode set %d" % GPIO.BCM)
+print(f"mode set {GPIO.BCM}")
 
 print("setup")
 GPIO.setup(PIN, GPIO.OUT, initial=GPIO.LOW)

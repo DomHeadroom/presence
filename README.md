@@ -10,7 +10,7 @@ Home automation system for controlling doors electronically and logging accesses
 sudo apt install python3-venv
 ```
 
-1. Create a Python 3.13.5 virtualenv inside project's directory and activate it
+1. Create a Python 3.12+ virtualenv (developed on 3.14) inside project's directory and activate it
 
 ```sh
 python3 -m venv venv
