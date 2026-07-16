@@ -81,9 +81,9 @@ class AtlantisModem(Modem):
 
     def get_controller(self):
         logger.debug("opening serial port..")
-        serial = self._get_serial()
+        ser = self._get_serial()
         logger.debug("serial port opened")
-        return AtlantisModemController(serial)
+        return AtlantisModemController(ser)
 
 
 class AtlantisModemController(threading.Thread, ModemController):
@@ -96,11 +96,11 @@ class AtlantisModemController(threading.Thread, ModemController):
         self.request = request
 
         try:
-            self.serial.setTimeout(INIT_CMD_WAIT)
+            self.serial.timeout = INIT_CMD_WAIT
 
             logger.debug("flushing buffers")
-            self.serial.flushInput()
-            self.serial.flushOutput()
+            self.serial.reset_input_buffer()
+            self.serial.reset_output_buffer()
 
             logger.debug("sending init commands to modem..")
             for c in INIT_COMMANDS:
@@ -115,7 +115,7 @@ class AtlantisModemController(threading.Thread, ModemController):
                     if ok != MSG_OK:
                         raise IOError(f"error at comand: {c}")
 
-            self.serial.setTimeout(timeout)
+            self.serial.timeout = timeout
             logger.debug("setup complete, controller in listen mode")
 
         except Exception as e:
