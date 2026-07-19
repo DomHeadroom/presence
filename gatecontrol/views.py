@@ -6,6 +6,10 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from gatecontrol.models import AccessRequest
 
+# tetto per ?limit di show_requests: l'endpoint e' anonimo, niente query a
+# taglia decisa dal client
+MAX_REQUESTS_LIMIT = 20
+
 
 def get_client_ip(request):
     """IP reale del client dall'header X-Forwarded-For.
@@ -70,7 +74,11 @@ def show_requests(request, gate_name):
         limit = int(request.GET.get("limit", "10"))
     except ValueError:
         return HttpResponseBadRequest()
-    access_requests = AccessRequest.objects.get_last_accesses(gate_name, limit)
+    if limit < 0:
+        return HttpResponseBadRequest()
+    access_requests = AccessRequest.objects.get_last_accesses(
+        gate_name, min(limit, MAX_REQUESTS_LIMIT)
+    )
     response = [
         {
             "time": r.req_time.strftime("%Y-%m-%dT%H:%M:%S"),

@@ -5,9 +5,11 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.test import TestCase, Client, override_settings
+from django.utils import timezone
 
 from gatecontrol.gatecontrol import Gate, STATE_CLOSED
-from gatecontrol.models import AccessRequest
+from gatecontrol.models import AccessRequest, REQUEST_STATE_OK
+from gatecontrol.views import MAX_REQUESTS_LIMIT
 
 
 class TestViews(TestCase):
@@ -47,6 +49,29 @@ class TestViews(TestCase):
         actual = self.parse_response(response)[0]
         expected = {"user": "admin", "time": "2015-03-01T17:28:18"}
         self.assertEqual(expected.keys(), actual.keys())
+
+    def test_show_requests_invalid_limit(self):
+        for bad in ("-1", "abc"):
+            response = self.client.get(
+                reverse("requests", args=("test",)), data={"limit": bad}
+            )
+            self.assertEqual(400, response.status_code)
+
+    def test_show_requests_limit_capped(self):
+        user = User.objects.get(username="admin")
+        now = timezone.now()
+        AccessRequest.objects.bulk_create(
+            AccessRequest(
+                user=user, req_time=now, req_state=REQUEST_STATE_OK, gate="test"
+            )
+            for _ in range(MAX_REQUESTS_LIMIT + 20)
+        )
+        response = self.client.get(
+            reverse("requests", args=("test",)),
+            data={"limit": MAX_REQUESTS_LIMIT + 50},
+        )
+        actual = self.parse_response(response)
+        self.assertEqual(MAX_REQUESTS_LIMIT, len(actual))
 
     @override_settings(TRUSTED_PROXIES=["10.87.1.1"])
     def test_forwarded_for_ignores_spoofed_prefix(self):
