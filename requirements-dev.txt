@@ -1,3 +1,4 @@
 # Dipendenze per sviluppo software
 -r requirements.txt
 PyYAML==6.0.3
+ruff==0.15.22
