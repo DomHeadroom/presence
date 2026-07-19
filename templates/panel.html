@@ -293,7 +293,6 @@ margin-top: 8px;
 				<li>
 					<form action="/accounts/logout/" method="post" style="margin:0;padding:0;display:inline;">
 						{% csrf_token %}
-						<input type="hidden" name="next" value="/">
 						<button type="submit" class="logout-link">Logout</button>
 					</form>
 				</li>

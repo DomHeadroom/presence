@@ -110,6 +110,15 @@ USE_TZ = False
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 
+# Autenticazione
+# https://docs.djangoproject.com/en/5.2/ref/settings/#login-redirect-url
+
+# senza questi Django redirige al default /accounts/profile/ (non routato → 404)
+# e il logout renderizza il template logged_out dell'admin
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
