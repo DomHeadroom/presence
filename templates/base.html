@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="it">
   <head>
-    {% load static %}
+    {% load static compress %}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
 
     <title>HLCS Presence{% block title %}{% endblock %}</title>
-    
+
     <!-- Bootstrap core CSS -->
+    {% compress css %}
     <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
-    
+    {% endcompress %}
+
     {% block script %}{% endblock %}
     {% block extrastyle %}{% endblock %}
     

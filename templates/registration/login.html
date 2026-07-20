@@ -1,14 +1,16 @@
 {% extends "base.html" %}
 
-{% load static %}
- 
+{% load static compress %}
+
 {% block title %} | Login{% endblock %}
 
 {% block extrastyle %}
 
 <!-- Custom styles for this template -->
+{% compress css %}
 <link href="{% static 'css/signin.css' %}" rel="stylesheet">
-    
+{% endcompress %}
+
 {% endblock %}
 
 {% block body %}

@@ -1,8 +1,10 @@
-{% extends "base.html" %} {% load static %} {% block extrastyle %}
+{% extends "base.html" %} {% load static compress %} {% block extrastyle %}
 
 <!-- Custom styles for this template-->
+{% compress css %}
 <link href="{% static 'css/cover.css' %}" rel="stylesheet">
 <link href="{% static 'css/about.css' %}" rel="stylesheet">
+{% endcompress %}
 {% endblock %}
 
 {% block body %}

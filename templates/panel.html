@@ -1,18 +1,22 @@
 {% extends "base.html" %}
 
-{% load static %}
+{% load static compress %}
 
-{% block title %} | Control Panel{% endblock %} 
+{% block title %} | Control Panel{% endblock %}
 
 {% block script %}
 
+{% compress js %}
 <script src="{% static 'js/panel.js' %}"></script>
+{% endcompress %}
 
 {% endblock %}
 
 {% block extrastyle %}
 
+{% compress css %}
 <link href="{% static 'css/panel.css' %}" rel="stylesheet">
+{% endcompress %}
 
 {% endblock %}
 

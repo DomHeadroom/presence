@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "compressor",
     "rest_framework",
     "gatecontrol",
 ]
@@ -129,6 +130,19 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # destinazione di collectstatic in produzione (non è la sorgente static/)
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "compressor.finders.CompressorFinder",
+]
+
+# minifica/bundla i blocchi {% compress %} dei template al momento del
+# deploy (richiede rcssmin/rjsmin, vedi requirements-prod.txt); in dev
+# (DEBUG=True) COMPRESS_ENABLED resta a False di default e i blocchi
+# passano invariati. In produzione va lanciato "manage.py compress"
+# dopo "collectstatic".
+COMPRESS_OFFLINE = True
 
 LOGGING = {
     "version": 1,

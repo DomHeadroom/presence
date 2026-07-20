@@ -1,42 +1,15 @@
- {% extends "base.html" %} {% load static %} {% block extrastyle %}
+ {% extends "base.html" %} {% load static compress %} {% block extrastyle %}
 
 <!-- Custom styles for this template -->
+{% compress css %}
 <link href="{% static 'css/cover.css' %}" rel="stylesheet">
+{% endcompress %}
 
 {% endblock %} {% block script %}
 
+{% compress js %}
 <script src="{% static 'js/index.js' %}"></script>
-<script type="text/javascript">
-        
-	const setOpenHeading = () => {
-        document.querySelector(".cover-heading").innerText = "Aperto";
-        document.querySelector("#info").style.display = "";
-    }
-    const setClosedHeading = () => {
-        document.querySelector(".cover-heading").innerText = "Chiuso";
-        document.querySelector("#info").style.display = "none";
-    }
-    const setErrorHeading = () => {
-        document.querySelector(".cover-heading").innerText = "Errore";
-        document.querySelector("#info").style.display = "none";
-    }
-    const update = async () => {
-        try {
-            const header = await fetch("/gates/internal/");
-            const body = await header.json();
-            if (body.id == 1) setOpenHeading();
-            else setClosedHeading();
-        } catch (error) {
-            setErrorHeading();
-        }
-    }
-
-    window.addEventListener("load", () => {
-        document.querySelector("#info").style.display = "none";
-        update();
-        setInterval(update, 5000);
-    })
-</script>
+{% endcompress %}
 
 {% endblock %} {% block body %}
 
