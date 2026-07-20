@@ -13,7 +13,7 @@ from gatecontrol.views import MAX_REQUESTS_LIMIT
 
 
 class TestViews(TestCase):
-    fixtures = ["users.yml", "requests.yml"]
+    fixtures = ["users.json", "requests.json"]
 
     def parse_response(self, response):
         self.assertEqual(200, response.status_code)
@@ -95,7 +95,7 @@ class TestViews(TestCase):
 
 
 class TestManager(TestCase):
-    fixtures = ["users.yml"]
+    fixtures = ["users.json"]
 
     def setUp(self):
         self.user = User.objects.get(pk=1)

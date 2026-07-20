@@ -1,0 +1,14 @@
+[
+{
+    "model": "gatecontrol.accessrequest",
+    "pk": 1,
+    "fields": {
+        "user": 1,
+        "req_time": "2015-03-01T21:01:47.057",
+        "req_state": "OK",
+        "info": "",
+        "gate": "test",
+        "address": "unknown"
+    }
+}
+]
