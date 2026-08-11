@@ -2,7 +2,7 @@ from django.conf import settings
 from django.http.response import Http404, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from gatecontrol.models import AccessRequest
 

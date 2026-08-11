@@ -5,11 +5,10 @@ Created on 08/nov/2014
 """
 
 import logging
+from time import sleep
 
 import RPi.GPIO as GPIO
-from time import sleep
 from django.conf import settings
-
 
 logger = logging.getLogger(__name__)
 

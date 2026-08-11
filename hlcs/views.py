@@ -1,9 +1,9 @@
-from django.shortcuts import render
-from django.conf import settings
 import re
 
-from gatecontrol.views import get_client_ip
+from django.conf import settings
+from django.shortcuts import render
 
+from gatecontrol.views import get_client_ip
 
 """
 Renders an HTML homepage

@@ -1,10 +1,9 @@
 from django.contrib import admin
-from django.urls import path
 from django.contrib.auth import views as auth_views
+from django.urls import path
 
 from gatecontrol import views as gatecontrol_views
 from hlcs import views as hlcs_views
-
 
 urlpatterns = [
     path("admin/", admin.site.urls),

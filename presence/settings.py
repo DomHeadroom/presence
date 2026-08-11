@@ -13,7 +13,6 @@ from pathlib import Path
 
 from hlcs.gates import HpccExternal, HpccInternal
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 

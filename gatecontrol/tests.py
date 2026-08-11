@@ -3,12 +3,12 @@ from unittest.mock import MagicMock
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
-from django.test import TestCase, Client, override_settings
 from django.utils import timezone
 
-from gatecontrol.gatecontrol import Gate, STATE_CLOSED
-from gatecontrol.models import AccessRequest, REQUEST_STATE_OK
+from gatecontrol.gatecontrol import STATE_CLOSED, Gate
+from gatecontrol.models import REQUEST_STATE_OK, AccessRequest
 from gatecontrol.views import MAX_REQUESTS_LIMIT
 
 

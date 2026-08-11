@@ -4,7 +4,6 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
-
 logger = logging.getLogger(__name__)
 
 REQUEST_STATE_PENDING = "PENDING"

@@ -1,12 +1,12 @@
-from unittest.mock import Mock, MagicMock
+from unittest.mock import MagicMock, Mock
 
 from django.test import TestCase
-from serial.serialutil import SerialException
 from serial import Serial
+from serial.serialutil import SerialException
 
 from hlcs import modem
-from hlcs.modem import AtlantisModem
 from hlcs.gates import HpccInternal
+from hlcs.modem import AtlantisModem
 
 
 class TestLocalAddress(TestCase):

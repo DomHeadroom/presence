@@ -4,11 +4,12 @@ Created on 08/nov/2014
 @author: spax
 """
 
-from gatecontrol.gatecontrol import Gate, STATE_CLOSED, STATE_OPEN
-from hlcs.modem import AtlantisModem
-from django.conf import settings
 import re
 
+from django.conf import settings
+
+from gatecontrol.gatecontrol import STATE_CLOSED, STATE_OPEN, Gate
+from hlcs.modem import AtlantisModem
 
 STATE_RING = {"id": 2, "description": "ring"}
 
