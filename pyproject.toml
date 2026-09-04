@@ -1,0 +1,35 @@
+[project]
+name = "presence"
+version = "0.1.0"
+description = "Home automation system for controlling doors electronically and logging accesses"
+readme = "README.md"
+authors = [
+    { name = "DomHeadroom", email = "domefemia@protonmail.com" },
+    { name = "Vincenzo Pirrone", email = "pirrone.v@gmail.com" },
+    { name = "Stefano De Carlo", email = "stefanauss@gmail.com" },
+    { name = "Cristian Santo Colosimo", email = "sc.colosimo@sinapsys.it" },
+    { name = "Pasquale De Rose", email = "akira.zeta@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "django==5.2.16",
+    "django-compressor==4.6.0",
+    "djangorestframework==3.17.1",
+    "pyserial==3.5",
+    "tzdata==2026.3",
+]
+
+[project.optional-dependencies]
+prod = [
+    "gunicorn==26.0.0",
+    "mysqlclient==2.2.8",
+    "rpi-lgpio==0.6",
+]
+
+[tool.uv]
+package = false
+
+[dependency-groups]
+dev = [
+    "ruff==0.15.22",
+]

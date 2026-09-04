@@ -4,41 +4,40 @@ Home automation system for controlling doors electronically and logging accesses
 
 ## Setup
 
-0. Install virtualenv. In debian derivates just run
+0. Install [uv](https://docs.astral.sh/uv/getting-started/installation/). On DietPi:
 
 ```sh
-sudo apt install python3-venv
+dietpi-software install 217
 ```
 
-1. Create a Python 3.12+ virtualenv (developed on 3.14) inside project's directory and activate it
+or with the official installer (no root required):
 
 ```sh
-python3 -m venv venv
-source venv/bin/activate
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-2. Install the required modules
+1. Install the required modules. This creates a `.venv` with a Python 3.12+ interpreter (developed on 3.14) and installs the project plus dev tooling.
 
 ```sh
-pip install -r requirements-dev.txt
+uv sync
 ```
 
-On the Raspberry Pi that drives the real gates, install the hardware requirements instead. This pulls in `rpi-lgpio`; it requires kernel >= 5.11 and must not be installed alongside the classic `RPi.GPIO`.
+On the Raspberry Pi that drives the real gates, sync the `prod` extra instead. This pulls in `rpi-lgpio`, `mysqlclient` and `gunicorn`; `rpi-lgpio` requires kernel >= 5.11 and must not be installed alongside the classic `RPi.GPIO`.
 
 ```sh
-pip install -r requirements-rpi.txt
+uv sync --extra prod
 ```
 
-3. Create the db. Default is sqlite, you will be asked to create a superuser
+2. Create the db. Default is sqlite, you will be asked to create a superuser
 
 ```sh
-python3 manage.py migrate
+uv run python src/manage.py migrate
 ```
 
-4. You are now able to run the app. The webserver will be available at the specified port.
+3. You are now able to run the app. The webserver will be available at the specified port.
 
 ```sh
-python3 manage.py runserver 8080
+uv run python src/manage.py runserver 8080
 ```
 
 ## Modules
@@ -48,12 +47,12 @@ python3 manage.py runserver 8080
 
 ## Usage
 
-The available doors (`internal` and `external`) are defined in the `GATES` dictionary in `presence/settings.py`.
+The available doors (`internal` and `external`) are defined in the `GATES` dictionary in `src/presence/settings.py`.
 
 List the doors and their state by running the server and querying it
 
 ```sh
-python3 manage.py runserver 8080
+uv run python src/manage.py runserver 8080
 curl http://localhost:8080/gates/
 ```
 

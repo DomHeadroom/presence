@@ -135,9 +135,8 @@ STATICFILES_FINDERS = [
 ]
 
 # minifica/bundla i blocchi {% compress %} dei template al momento del
-# deploy (richiede rcssmin/rjsmin, vedi requirements-prod.txt); in dev
-# (DEBUG=True) COMPRESS_ENABLED resta a False di default e i blocchi
-# passano invariati. In produzione va lanciato "manage.py compress"
+# deploy; in dev (DEBUG=True) COMPRESS_ENABLED resta a False di default e
+# i blocchi passano invariati. In produzione va lanciato "manage.py compress"
 # dopo "collectstatic".
 COMPRESS_OFFLINE = True
 

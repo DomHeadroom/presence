@@ -1,6 +1,0 @@
-# Dipendenze per ambiente in produzione su Raspberry Pi
--r requirements.txt
-rpi-lgpio==0.6
-mysqlclient==2.2.8
-gunicorn==26.0.0
-django-compressor==4.6.0
