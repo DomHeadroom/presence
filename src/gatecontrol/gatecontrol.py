@@ -23,5 +23,8 @@ class Gate:
     def is_open(self):
         return self.get_state() == STATE_OPEN
 
+    def is_available(self):
+        return True
+
     def get_available_states(self):
         return (STATE_OPEN, STATE_CLOSED)

@@ -12,27 +12,31 @@ from gatecontrol.gatecontrol import STATE_CLOSED, STATE_OPEN, Gate
 from hlcs.modem import AtlantisModem
 
 STATE_RING = {"id": 2, "description": "ring"}
+STATE_UNAVAILABLE = {"id": 3, "description": "unavailable"}
 
 
 class HpccExternal(Gate):
     def __init__(self, modem=None):
-        pass
-        # if modem is None:
-        #    self.modem = AtlantisModem()
-        # else:
-        #    self.modem = modem
+        self.modem = modem
+
+    def is_available(self):
+        if self.modem is None:
+            return AtlantisModem.is_available()
+        return True
 
     def get_available_states(self):
-        return (STATE_CLOSED, STATE_OPEN, STATE_RING)
+        return (STATE_CLOSED, STATE_OPEN, STATE_RING, STATE_UNAVAILABLE)
 
-    def open_gate(self, request):
-        self.controller = self.modem.get_controller()
+    def open_gate(self, request=None):
+        modem = self.modem or AtlantisModem()
+        self.controller = modem.get_controller()
         self.controller.setup(request)
         self.controller.start()
 
     def get_state(self, request=None):
-        return STATE_CLOSED
-        if request is None:
+        if not self.is_available():
+            return STATE_UNAVAILABLE
+        elif request is None:
             return STATE_CLOSED
         elif request.is_ok():
             return STATE_OPEN

@@ -16,7 +16,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import logging
-import sys
 import threading
 import time
 
@@ -64,19 +63,17 @@ class AtlantisModem(Modem):
     PORT = "/dev/ttyUSB0"
     BAUDRATE = 115200
 
-    def __init__(self):
-        self._check_connection()
-
     def _get_serial(self):
         return serial.Serial(AtlantisModem.PORT, baudrate=AtlantisModem.BAUDRATE)
 
-    def _check_connection(self):
+    @classmethod
+    def is_available(cls):
         try:
-            s = self._get_serial()
-            s.close()
+            serial.Serial(cls.PORT, baudrate=cls.BAUDRATE).close()
+            return True
         except Exception as e:
-            print(f"ERROR: {__name__}: {str(e)}")
-            sys.exit(1)
+            logger.warning(f"modem not available: {e}")
+            return False
 
     def get_controller(self):
         logger.debug("opening serial port..")
@@ -109,10 +106,9 @@ class AtlantisModemController(threading.Thread, ModemController):
                 echo = self.serial.readline()  # echo
                 if len(echo) == 0:
                     raise IOError("no echo received")
-                else:
-                    ok = self.serial.readline()
-                    if ok != MSG_OK:
-                        raise IOError(f"error at comand: {c}")
+                ok = self.serial.readline()
+                if ok != MSG_OK:
+                    raise IOError(f"error at comand: {c}")
 
             self.serial.timeout = timeout
             logger.debug("setup complete, controller in listen mode")

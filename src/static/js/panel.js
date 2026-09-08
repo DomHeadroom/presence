@@ -42,6 +42,7 @@ const strings = {
   open: "aperta",
   closed: "chiusa",
   ring: "suona",
+  unavailable: "non disponibile",
   error: "errore",
 };
 
@@ -140,7 +141,8 @@ function updateLabel(label_id, state) {
 
   if (state.id == 0) label.classList.add("label-default");
   else if (state.id == 1) label.classList.add("label-success");
-  else label.classList.add("label-warning");
+  else if (state.id == 2) label.classList.add("label-warning");
+  else label.classList.add("label-default");
 }
 
 function waitRing(response) {
@@ -151,7 +153,10 @@ function waitRing(response) {
       const header = await fetchWithCsrf(endpoint);
       const response = await header.json();
       updateLabel("#external-status", response);
-      if (response.pending == false) clearInterval(interval);
+      if (response.id !== 2) {
+        clearInterval(interval);
+        document.querySelector("#external-button").disabled = response.id === 3;
+      }
     } catch (e) {
       setError("#external-status");
       document.querySelector("#external-button").disabled = true;
@@ -171,6 +176,8 @@ async function update() {
         const button = document.getElementById("internal-button");
         const allowed = button.dataset.allowed === "true";
         button.disabled = !allowed || state.id === 1;
+      } else if (name === "external" && state.id !== 2) {
+        document.getElementById("external-button").disabled = state.id === 3;
       }
     }
   } catch (e) {

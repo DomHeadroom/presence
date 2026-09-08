@@ -15,12 +15,18 @@ def homepage(request):
         return render(request, "index.html")
     gates = getattr(settings, "GATES", {})
     internal = gates["internal"]
+    external = gates["external"]
     allowed = _internal_allowed(request)
     options = "" if allowed and not internal.is_open() else 'disabled="disabled"'
+    external_options = "" if external.is_available() else 'disabled="disabled"'
     return render(
         request,
         "panel.html",
-        {"options": options, "internal_allowed": allowed},
+        {
+            "options": options,
+            "internal_allowed": allowed,
+            "external_options": external_options,
+        },
     )
 
 
